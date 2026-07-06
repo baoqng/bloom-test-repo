@@ -1,0 +1,11 @@
+export function wTieAwayR2(x: number): number {
+  if (Object.is(x, -0)) return 0;
+  if (!isFinite(x) || isNaN(x)) return x;
+  const f = Math.floor(x);
+  const d = x - f;
+  if (d < 0.5) return f;
+  if (d > 0.5) return f + 1;
+  // Exactly halfway: round to even
+  if (f % 2 === 0) return f;
+  return f + 1;
+}
