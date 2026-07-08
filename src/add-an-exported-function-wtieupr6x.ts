@@ -1,0 +1,17 @@
+export function wTieUpR6(x: number): number {
+  if (!isFinite(x)) return x;
+  const f = Math.floor(x);
+  const frac = x - f;
+  if (frac < 0.5) {
+    return f;
+  } else if (frac > 0.5) {
+    return f + 1;
+  } else {
+    // Exact tie: round to even
+    if (f % 2 === 0) {
+      return f;
+    } else {
+      return f + 1;
+    }
+  }
+}
