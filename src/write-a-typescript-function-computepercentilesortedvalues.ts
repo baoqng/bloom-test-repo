@@ -1,0 +1,31 @@
+// bloom-deps:
+
+export function computePercentile(sortedValues: unknown, percentile: unknown): number {
+  if (!Array.isArray(sortedValues) || sortedValues.length === 0) {
+    throw new TypeError("sortedValues must be a non-empty array");
+  }
+
+  for (const val of sortedValues) {
+    if (typeof val !== "number" || !isFinite(val)) {
+      throw new TypeError("each value must be a finite number");
+    }
+  }
+
+  if (typeof percentile !== "number" || isNaN(percentile)) {
+    throw new TypeError("percentile must be a number");
+  }
+
+  if (!isFinite(percentile) || percentile < 0 || percentile > 100) {
+    throw new RangeError("percentile must be between 0 and 100 inclusive");
+  }
+
+  const n = sortedValues.length;
+  const index = (percentile / 100) * (n - 1);
+  const lower = Math.floor(index);
+  const upper = Math.ceil(index);
+
+  const lowerVal = sortedValues[lower] as number;
+  const upperVal = sortedValues[upper] as number;
+
+  return lowerVal + (index - lower) * (upperVal - lowerVal);
+}
