@@ -1,0 +1,60 @@
+// bloom-deps:
+
+function validateDomainName(domain: unknown): string {
+  // Step 1: Type check
+  if (typeof domain !== "string") {
+    throw new TypeError("domain must be a string");
+  }
+
+  // Step 2: Empty/whitespace check
+  if (!domain.trim()) {
+    throw new RangeError("domain must not be empty");
+  }
+
+  // Trim and lowercase once before all further checks
+  const trimmed = domain.trim().toLowerCase();
+
+  // Step 3: Length bounds check
+  if (trimmed.length > 253) {
+    throw new RangeError("domain must not exceed 253 characters");
+  }
+
+  // Step 4: Structural constraint - must contain at least one dot
+  if (!trimmed.includes(".")) {
+    throw new RangeError("domain must contain at least one dot");
+  }
+
+  // Step 5: Content/character-set and label validation
+  const labels = trimmed.split(".");
+
+  for (let i = 0; i < labels.length; i++) {
+    const label = labels[i];
+
+    // Check label length (1-63 characters)
+    if (label.length === 0 || label.length > 63) {
+      throw new RangeError("each label must be between 1 and 63 characters");
+    }
+
+    // Check label contains only letters, digits, and hyphens
+    if (!/^[a-z0-9-]+$/.test(label)) {
+      throw new RangeError(
+        "labels must contain only letters, digits, and hyphens"
+      );
+    }
+
+    // Check label does not start or end with hyphen
+    if (label.startsWith("-") || label.endsWith("-")) {
+      throw new RangeError("labels must not start or end with a hyphen");
+    }
+  }
+
+  // Step 6: TLD (last label) must contain at least one letter
+  const tld = labels[labels.length - 1];
+  if (!/[a-z]/.test(tld)) {
+    throw new RangeError("top-level domain must contain at least one letter");
+  }
+
+  return trimmed;
+}
+
+export { validateDomainName };
